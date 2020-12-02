@@ -1,0 +1,9 @@
+Django
+django-allauth
+django-bootstrap4
+django-crispy-forms
+django_forms_bootstrap
+django-bootstrap-datepicker-plus
+django-multiselectfield
+dj_database_url
+gunicorn

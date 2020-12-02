@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+{% load socialaccount %}
+
+<!--
+    REFERENCES
+    Title: Bootstrap - Collapse, Accordion Example
+    Author: Mark Otto, Chris Rebert, Bardi Harborow, et. al.
+    Date Accessed: 11/4/20 
+    Code version: 4.3
+    URL: https://getbootstrap.com/docs/4.3/components/collapse/#accordion-example
+    Software License: MIT
+-->
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Volunteering</title>
+    </head>
+    <body>
+        <header>
+            <!--This includes the navbar-->
+            {% include "project-1-37/navbar.html" %}
+            <!--Header? sort of-->
+            <div class="row justify-content-center">
+                <div class="text-center">
+                    {% if page_title %}
+                        <h1 class="mt-2">{{ page_title }}</h1>
+                        <hr class="mt-0 mb-4">
+                    {% else %}
+                        <h1 class="mt-2">Header</h1>
+                        <hr class="mt-0 mb-4">
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        {% if v1 and not type %}
+        <div class="row justify-content-center" style="padding: 30px; padding-top: 0px">
+            <a class="btn btn-info" href="{% url 'volunteer_post' %}" role="button">Post Volunteer Opportunity</a>
+        </div>
+        {% endif %}
+
+        <div class="accordion col-sm-12 col-md-9 col-lg-6" id="event_accordion" style="width: 75%; margin: auto; padding-bottom: 30px">
+        {% for item in v1 %}
+            <div class="card">
+                <!-- Card Header -->
+                {% if forloop.first %}
+                <div class="card-header flex-container" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" 
+                aria-expanded="true" aria-controls="collapse{{ forloop.counter }}" style="flex-direction: row; display: flex; justify-content: space-between; background-color:rgba(87, 191, 207, 0.7)">
+                    <div><h5 class="mb-0" style="padding: 10px">{{ item.event_name }}</h5></div>
+                    <div style="padding: 10px"><h6 class="mb-0">{{ item.start_datetime }}</h6></div>
+                </div>
+                <!-- Card Body - displays on click -->
+                <div id="collapse{{ forloop.counter }}" class="collapse show" aria-labelledby="heading{{ forloop.counter }}" data-parent="#event_accordion">
+                    <div class="card-body" style="background-color: whitesmoke; padding-left: 90px; padding-right: 90px">
+                        <p>{{ item.description }}</p>
+                        <p><b>Location:</b> {{ item.location }}</p>
+                        <p><b>Contact:</b> <a href ="/profile/{{item.created_by.id}}">{{ item.created_by }}</a></p>
+                        <div class="row flex-container" style="flex-direction: row; display: flex; justify-content: space-around; padding-bottom: 10px">
+                            <div><b>{{ item.hours.hour }}</b> hour{{ item.hours.hour|pluralize }}
+                                {% if item.hours.minute %}
+                                    <b>{{ item.hours.minute }}</b> minute{{ item.hours.minute|pluralize }}
+                                {% endif %}
+                            </div>
+                            <div><b>{{ item.volunteers_needed }}</b> volunteer{{ item.volunteers_needed|pluralize }} needed</div>
+                        </div>
+                        <div style="text-align: center">
+                            {% if type == 'remove_self' %}
+                                <a href ="/remove/{{item.id}}"><button class="btn btn-outline-danger">Remove</button></a>
+                            {% elif type == 'delete' %}
+                                <a href ="/delete/{{item.id}}"><button class="btn btn-outline-danger">Delete Event</button></a>
+                            {% else %}
+                                <a href ="/apply/{{item.id}}"><button class="btn btn-outline-info">Sign up</button></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!--Card Header-->
+                <div class="card-header flex-container" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" 
+                aria-expanded="false" aria-controls="collapse{{ forloop.counter }}" style="flex-direction: row; display: flex; justify-content: space-between; background-color:rgba(87, 191, 207, 0.7)">
+                    <div><h5 class="mb-0" style="padding: 10px">{{ item.event_name }}</h5></div>
+                    <div style="padding: 10px"><h6 class="mb-0">{{ item.start_datetime }}</h6></div>
+                </div>
+                <!-- Card Body - displays on click -->
+                <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#event_accordion">
+                    <div class="card-body" style="background-color: whitesmoke; padding-left: 90px; padding-right: 90px">
+                        <p>{{ item.description }}</p>
+                        <p><b>Location:</b> {{ item.location }}</p>
+                        <p><b>Contact:</b> <a href ="/profile/{{item.created_by.id}}">{{ item.created_by }}</a></p>
+                        <div class="row flex-container" style="flex-direction: row; display: flex; justify-content: space-around; padding-bottom: 10px">
+                            <div><b>{{ item.hours.hour }}</b> hour{{ item.hours.hour|pluralize }}
+                                {% if item.hours.minute %}
+                                    <b>{{ item.hours.minute }}</b> minute{{ item.hours.minute|pluralize }}
+                                {% endif %}
+                            </div>
+                            <div><b>{{ item.volunteers_needed }}</b> volunteer{{ item.volunteers_needed|pluralize }} needed</div>
+                        </div>
+                        <div style="text-align: center">
+                            {% if type == 'remove_self' %}
+                                <a href ="/remove/{{item.id}}"><button class="btn btn-outline-danger">Remove</button></a>
+                            {% elif type == 'delete' %}
+                                <a href ="/delete/{{item.id}}"><button class="btn btn-outline-danger">Delete Event</button></a>
+                            {% else %}
+                                <a href ="/apply/{{item.id}}"><button class="btn btn-outline-info">Sign up</button></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            {% if type %}
+            <div class="text-center">
+                <p style="padding: 5px">You haven't signed up for any volunteer opportunities yet!</p>
+                <a href="{% url 'volunteer_list' %}"><button class="btn btn-info">View Volunteer Opportunities</button></a>
+            </div>   
+            {% else %}
+            <div class="text-center">
+                <p style="padding: 5px">No new volunteer opportunities!</p>
+                <a href="{% url 'volunteer_post' %}"><button class="btn btn-info">Post Volunteer Opportunity</button></a>
+            </div> 
+            {% endif %}   
+        {% endfor %}
+        </div>
+
+        <!--This includes the footer-->
+        {% include "project-1-37/footer.html" %}
+    </body>
+</html>

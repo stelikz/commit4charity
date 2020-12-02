@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load socialaccount %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Welcome</title>
+    </head>
+    <body>
+        <header>
+            <!--This includes the navbar-->
+            {% if user.is_authenticated %}
+                {% include "project-1-37/navbar.html" %}
+            {% else %}
+                {% include "project-1-37/navbar-minimal.html" %}
+            {% endif %}
+            <!--Header? sort of-->
+            <div class="row justify-content-center">
+                <div class="text-center">
+                    {% if page_title %}
+                        <h1 class="mt-2">{{ page_title }}</h1>
+                        <hr class="mt-0 mb-4">
+                    {% else %}
+                        <h1 class="mt-2">Header</h1>
+                        <hr class="mt-0 mb-4">
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div class="text-center">
+                {% if user.is_authenticated %}
+                    <div class="container" style="padding-bottom: 30px">
+                    {% if user.profile in leading_users %}    
+                        <p style="margin: auto; text-align: center;">
+                            Congratulations, {{user.username}}! You have made it into the top ten!
+                        </p></br>
+                        <a class="btn btn-info" href="{% url 'leaderboard' %}" role="button">View Leaderboard</a>
+                    {% else %}
+                        <p>Welcome, {{ user.username }} !</p>
+                    {% endif %}
+                    </div>
+                    <div class="border border-info rounded text-center" style="text-align: center; display: inline-block; padding: 20px">
+                        <p style="padding-bottom: 30px; margin: auto; text-align: center">You have <b>{{ user_profile.points }}</b> point{{ user_profile.points|pluralize }}!</p>
+                        <a class="btn btn-info" href="{% url 'volunteer_list' %}" role="button" style="width: 100%">Volunteer</a>
+                        <p style="padding: 5px; margin: auto; text-align: center">or</p>
+                        <a class="btn btn-info" href="{% url 'donation_list' %}" role="button" style="width: 100%">Donate</a>
+                        <p style="margin: auto; text-align: center; padding-top: 5px">to earn more points!</p>
+                    </div>
+                {% else %}
+                    <h3 style="padding-bottom: 30px">Login to see Commits4Charity</h3>
+                <!--<a href="{% provider_login_url 'google' %}">Login with Google</a>-->
+                    <form action="{% provider_login_url 'google' %}">
+                        <button type="submit" class="btn btn-info center">Login with Google</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+        <!--This includes the footer-->
+        {% include "project-1-37/footer.html" %}
+    </body>
+</html>

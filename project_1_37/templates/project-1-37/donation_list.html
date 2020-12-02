@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+{% load socialaccount %}
+
+<!--
+    REFERENCES
+    Title: Bootstrap - Collapse, Accordion Example
+    Author: Mark Otto, Chris Rebert, Bardi Harborow, et. al.
+    Date Accessed: 11/4/20 
+    Code version: 4.3
+    URL: https://getbootstrap.com/docs/4.3/components/collapse/#accordion-example
+    Software License: MIT
+
+    Title: Bootstrap - Pill Badges
+    Author: Mark Otto, Chris Rebert, Bardi Harborow, et. al.
+    Date Accessed: 11/20/20 
+    Code version: 4.3
+    URL: https://getbootstrap.com/docs/4.0/components/badge/#pill-badges
+    Software License: MIT
+-->
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Donations</title>
+    </head>
+    <body>
+
+        <header>
+            <!--This includes the navbar-->
+            {% include "project-1-37/navbar.html" %}
+            <!--Header? sort of-->
+            <div class="row justify-content-center">
+                <div class="text-center">
+                    {% if page_title %}
+                        <h1 class="mt-2">{{ page_title }}</h1>
+                        
+                        <hr class="mt-0 mb-4">
+
+                    {% else %}
+                        <h1 class="mt-2">Header</h1>
+                        <hr class="mt-0 mb-4">
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        {% if v1 and not profile %}
+        <div class="row justify-content-center" style="padding: 30px; padding-top: 0px">
+            <a class="btn btn-info" href="{% url 'donation_post' %}" role="button">Post Donation Opportunity</a>
+        </div>
+        {% endif %}
+
+        <div class="accordion col-sm-12 col-md-9 col-lg-6" id="event_accordion" style="width: 75%; margin: auto; padding-bottom: 30px">
+        {% for item in v1 %}
+            <div class="card">
+                <!-- Card Header -->
+                {% if forloop.first %}
+                <div class="card-header flex-container" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" 
+                aria-expanded="true" aria-controls="collapse{{ forloop.counter }}" style="flex-direction: row; display: flex; justify-content: space-between; background-color:rgba(87, 191, 207, 0.7)">
+                    <div><h5 class="mb-0" style="padding: 10px">{{ item.d_org }}</h5></div>
+                    {% if type == 'created_d' %}
+                    <div style="padding: 10px"><h6 class="mb-0">Total Received: &#36;{{ item.d_total_received }}</h6></div>
+                    {% elif profile %}
+                    <div style="padding: 10px"><h6 class="mb-0">&#36;{{ item.amount_donated }} on {{ item.transaction_date }}</h6></div>
+                    {% endif %}
+                </div>
+                <!-- Card Body - displays on click -->
+                <div id="collapse{{ forloop.counter }}" class="collapse show" aria-labelledby="heading{{ forloop.counter }}" data-parent="#event_accordion">
+                    <div class="card-body" style="background-color: whitesmoke; padding-left: 90px; padding-right: 90px">
+                        <p>{{ item.d_description }}</p>
+                        <p><b>Contact:</b> <a href ="/profile/{{item.d_created_by.id}}">{{ item.d_created_by }}</a></p>
+                        <div style="text-align: center">Relevant Causes:</div>
+                        <div class="row" style="justify-content: center; padding-bottom: 10px">
+                            {% for cause in item.d_causes %}
+                            <div style="padding: 4px">
+                                <span class="badge badge-pill badge-info">{{ cause.title }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div style="text-align: center; padding-top: 10px">
+                            {% if profile %}
+                                <a href ="checkout/{{item.id}}"><button class="btn btn-outline-info">Donate Again</button></a>
+                            {% elif not type == 'created_d' %}
+                                <a href ="checkout/{{item.id}}"><button class="btn btn-outline-info">Donate</button></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <!--Card Header-->
+                <div class="card-header flex-container" id="heading{{ forloop.counter }}" data-toggle="collapse" data-target="#collapse{{ forloop.counter }}" 
+                aria-expanded="false" aria-controls="collapse{{ forloop.counter }}" style="flex-direction: row; display: flex; justify-content: space-between; background-color:rgba(87, 191, 207, 0.7)">
+                    <div><h5 class="mb-0" style="padding: 10px">{{ item.d_org }}</h5></div>
+                    {% if type == 'created_d' %}
+                    <div style="padding: 10px"><h6 class="mb-0">Total Received: &#36;{{ item.d_total_received }}</h6></div>
+                    {% elif profile %}
+                    <div style="padding: 10px"><h6 class="mb-0">&#36;{{ item.amount_donated }} on {{ item.transaction_date }}</h6></div>
+                    {% endif %}
+                </div>
+                <!-- Card Body - displays on click -->
+                <div id="collapse{{ forloop.counter }}" class="collapse" aria-labelledby="heading{{ forloop.counter }}" data-parent="#event_accordion">
+                    <div class="card-body" style="background-color: whitesmoke; padding-left: 90px; padding-right: 90px">
+                        <p>{{ item.d_description }}</p>
+                        <p><b>Contact:</b> <a href ="/profile/{{item.d_created_by.id}}">{{ item.d_created_by }}</a></p>
+                        <div style="text-align: center">Relevant Causes:</div>
+                        <div class="row" style="justify-content: center; padding-bottom: 10px">
+                            {% for cause in item.d_causes %}
+                            <div style="padding: 4px">
+                                <span class="badge badge-pill badge-info">{{ cause.title }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div style="text-align: center; padding-top: 10px">
+                            {% if profile %}
+                                <a href ="checkout/{{item.id}}"><button class="btn btn-outline-info">Donate Again</button></a>
+                            {% elif not type == 'created_d' %}
+                                <a href ="checkout/{{item.id}}"><button class="btn btn-outline-info">Donate</button></a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% empty %}
+            {% if type %}
+            <div class="text-center">
+                <p style="padding: 5px">You haven't made any donations yet!</p>
+                <a href="{% url 'donation_list' %}"><button class="btn btn-info">View Donation Opportunities</button></a>
+            </div>   
+            {% else %}
+            <div class="text-center">
+                <p style="padding: 5px">No donation opportunities yet!</p>
+                <a href="{% url 'donation_post' %}"><button class="btn btn-info">Post Donation Opportunity</button></a>
+            </div> 
+            {% endif %}   
+        {% endfor %}
+        </div>
+
+        {% include "project-1-37/footer.html" %}
+    </body>
+</html>

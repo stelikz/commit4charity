@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Leaderboard</title>
+    </head>
+
+    <body>
+        <header>
+            <!--This includes the navbar-->
+            {% include "project-1-37/navbar.html" %}
+            <!--Header? sort of-->
+            <div class="row justify-content-center">
+                <div class="text-center">
+                    {% if page_title %}
+                        <h1 class="mt-2">{{ page_title }}</h1>
+                        <hr class="mt-0 mb-4">
+                    {% else %}
+                        <h1 class="mt-2">Header</h1>
+                        <hr class="mt-0 mb-4">
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <div class="container" style="margin: auto; text-align: center; padding-bottom: 10px">
+            <p><b>Points</b> &#61; Volunteering Hours <b>x 10</b> &#43; Amount Donated</p>
+        </div>
+
+        <div class="container" style="margin : auto; text-align : center;">
+            <table class="table">
+                <thead class="table-info">
+                    <th scope="col">Place</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Points</th>
+                </thead>
+                <tbody>
+                    {% for user in leading_users %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ user.user }}</td>
+                        <td>{{ user.points }}</td>
+                    </tr>    
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!--This includes the footer-->
+        {% include "project-1-37/footer.html" %}
+    </body>
+</html>
